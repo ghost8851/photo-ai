@@ -1,52 +1,144 @@
-<!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <!-- 引入样式 -->
 <link rel="stylesheet"
-	href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+	href="/photo-web/static/render/element/element.css">
 </head>
 <body>
-	<div id="app">
-		<el-row :gutter="10"> <el-col :xs="8" :sm="6" :md="4" :lg="3" :xl="1">
-		<div class="grid-content bg-purple"></div>
-		</el-col> <el-col :xs="4" :sm="6" :md="8" :lg="9" :xl="11">
-		<div class="grid-content bg-purple-light"></div>
-		</el-col> <el-col :xs="4" :sm="6" :md="8" :lg="9" :xl="11">
-		<div class="grid-content bg-purple"></div>
-		</el-col> <el-col :xs="8" :sm="6" :md="4" :lg="3" :xl="1">
-		<div class="grid-content bg-purple-light"></div>
-		</el-col> </el-row>
+	<div id="app" style="width:99%;margin: 0 auto;">
 	</div>
 </body>
 <!-- 先引入 Vue -->
-<script src="https://unpkg.com/vue/dist/vue.js"></script>
+<script src="/photo-web/static/render/vue/vue.js"></script>
 <!-- 引入组件库 -->
-<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+<script src="/photo-web/static/render/element/element.js"></script>
+<script src="/photo-web/static/render/jquery/jquery-3.3.1.min.js"></script>
 <script>
+	var screenWidth = $(window).width()- 95;
+	var array = new Array(65);
+	for(var i=0; i<65; i++){
+		if(i<9){
+			array[i] = "/photo-web/static/temp/IMG_100" + (i+1) + ".JPG";
+		}else{
+			array[i] = "/photo-web/static/temp/IMG_10" + (i + 1) + ".JPG";
+		}
+	}
+	var fCardW = Math.round(screenWidth/4);
+	if(fCardW < 100){
+		fCardW = 100;
+	}
+	var imageSizeCache = new Array(65);
+	var fCardH = Math.round(fCardW*3/4);
+	var imageStyle = new Array(65)
+	var cardStyle = {
+		width :  fCardW + 'px',
+		height : (fCardH + 60) + 'px',
+		padding : '0px',
+		float : 'left',
+		margin : '5px'
+	};
+	var html = "";
+	for(var i=0; i<65 ; i++){
+		var imageUrl = array[i];
+		var htmlLine = "<el-card shadow=\"hover\" v-bind:style=\"cardStyle\"><img v-bind:style=\"imageStyle[" + i + "]\" src=\"" + imageUrl + "\" title=\"第【" + i + " 】张图片\" />"
+			+ "<div style=\"padding-top:10px;\">拍摄日期：2014-09-21 <el-rate v-model=\"2.5\"></el-rate></div>"
+			+ "</el-card>";
+		html = html + htmlLine;
+		imageStyle[i] = {
+			width : '95%'
+		}
+		cacheImage(imageUrl,i);
+	}
+	
+	$("#app").html(html);
+	
+	
     new Vue({
       el: '#app',
       data: function() {
-        return { visible: false }
-      }
-    });
-  </script>
-  <style>
-  .el-col {
-    border-radius: 4px;
-  }
-  .bg-purple-dark {
-    background: #99a9bf;
-  }
-  .bg-purple {
-    background: #d3dce6;
-  }
-  .bg-purple-light {
-    background: #e5e9f2;
-  }
-  .grid-content {
-    border-radius: 4px;
-    min-height: 36px;
-  }
-</style>
+        return {cardStyle:cardStyle, screenWidth: screenWidth,imageStyle:imageStyle}
+      },
+      resizeFunc : $(window).resize(function () {
+      	screenWidth = $(window).width() - 95;
+		var cardW = Math.round(screenWidth/4);
+		if(cardW < 100){
+			cardW = 100;
+		}
+		var cardH = Math.round(cardW*3/4);
+		cardStyle.width = cardW + 'px';
+		cardStyle.height = cardH + 'px';
+		resizeAllImage(cardW, cardH);
+      })	
+    }); 
+    
+    function cacheImage(imageUrl, index){
+    	var img = new Image();
+    	img.src = imageUrl;
+		img.onload = function(){
+			if(img.width){
+				var realWidth = img.width;
+ 				var realHeight = img.height;
+ 				imageSizeCache[index] = {
+ 					width : realWidth,
+ 					height : realHeight	
+ 				}
+ 				console.log("缓存第 " + index + "张图片，原始大小 " + realWidth  + " * " + realHeight);
+ 				resizeAllImage(fCardW,fCardH,index);
+			}
+ 			
+		};
+    }
+    function resizeAllImage(width,height,index){
+    	if(index){
+    			var resizeW = width;
+    			var resizeH = height;
+    			var imageW = imageSizeCache[index].width;
+    			var imageH = imageSizeCache[index].height;
+    			if(height/width>=1){
+    			}else{
+    				if(imageH/imageW >= height/width){
+    			 		resizeH = height - 10;
+    			 		resizeW = Math.round(imageW * resizeH/imageH);
+    			 		console.log("第 " + i + "张图片，原始大小 " + imageW  + " * " + imageH + "，调整后 " +resizeW + " * " + resizeH);
+    				}else{
+    					resizeW = width - 10;
+    					resizeH = Math.round(resizeW/imageW * imageH);
+    					console.log("第 " + i + "张图片，原始大小 " + imageW  + " * " + imageH + "，调整后 " +resizeW + " * " + resizeH);
+    				}
+    			}
+    			imageStyle[index].width = resizeW + "px";
+    			imageStyle[index].height = resizeH + "px";
+    	}else{
+    		for(var i=0; i<imageSizeCache.length; i++){
+    			var resizeW = width;
+    			var resizeH = height;
+    			var imageW = imageSizeCache[i].width;
+    			var imageH = imageSizeCache[i].height;
+    			if(height/width>=1){
+    			}else{
+    				if(imageH/imageW >= height/width){
+    			 		resizeH = height - 10;
+    			 		resizeW = Math.round(imageW * resizeH/imageH);
+    			 		console.log("第 " + i + "张图片，原始大小 " + imageW  + " * " + imageH + "，调整后 " +resizeW + " * " + resizeH);
+    				}else{
+    					resizeW = width - 10;
+    					resizeH = Math.round(resizeW/imageW * imageH);
+    					console.log("第 " + i + "张图片，原始大小 " + imageW  + " * " + imageH + "，调整后 " +resizeW + " * " + resizeH);
+    				}
+    			}
+    			imageStyle[i].width = resizeW + "px";
+    			imageStyle[i].height = resizeH + "px";
+    		}
+    	}
+    }
+    </script>
+    
+    <style>
+    	.el-card__body {
+   			padding: 5px;
+   			margin: 0 auto;
+   			width:99%;
+		}
+    </style>
 </html>
