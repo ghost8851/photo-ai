@@ -14,10 +14,15 @@
 <!-- 引入组件库 -->
 <script src="/photo-web/static/render/element/element.js"></script>
 <script src="/photo-web/static/render/jquery/jquery-3.3.1.min.js"></script>
+<script src="/photo-web/modules/manage/list/js/index_adv.js"></script>
 <script>
 	var widthArr = new Array(100, 150, 200, 250, 300, 350, 400, 450, 500);
 	var heightArr = new Array(100, 150, 200, 250, 300, 350, 400, 450, 500);
 	var screenWidth = $(window).width()- 95;
+	var imageSizeCache = new Array(65);
+	var imageStyle = new Array(65)
+	var cardStyle = new Array(65);
+	
 	var array = new Array(65);
 	for(var i=0; i<65; i++){
 		if(i<9){
@@ -26,43 +31,27 @@
 			array[i] = "/photo-web/static/temp/IMG_10" + (i + 1) + ".JPG";
 		}
 	}
-	var fCardW = Math.round(screenWidth/4);
-	if(fCardW < 100){
-		fCardW = 100;
-	}
-	var imageSizeCache = new Array(65);
-	var fCardH = Math.round(fCardW*3/4);
-	var imageStyle = new Array(65)
-	var cardStyle = new Array(65);
-	for(var i=0; i<65; i++){
-		cardStyle[i] = {
-			width :  fCardW + 'px',
-			height : (fCardH + 60) + 'px',
-			padding : '0px',
-			float : 'left',
-			margin : '5px'
-		};
-	}
-	
-	var html = "";
-	for(var i=0; i<65 ; i++){
-		var imageUrl = array[i];
-		var htmlLine = "<el-card shadow=\"hover\" v-bind:style=\"cardStyle[" + i + "]\">"
-			+"<img v-bind:style=\"imageStyle[" + i + "]\" src=\"" + imageUrl + "\" title=\"第【" + i + " 】张图片\" />"
-			+ "<div style=\"padding-top:4px;\"><i class=\"el-icon-time\">2014-09-21 12:45:24</i></div>"
-			+ "<div  style=\"padding-top:4px;\"><i class=\"el-icon-location\">中国 北京</i></div> "
-			+ "<div  style=\"padding-top:4px;\"><el-rate v-model=\"4.5\"></el-rate></div>"
-			+ "</el-card>";
-		html = html + htmlLine;
-		imageStyle[i] = {
-			width : '95%'
+	var panel_map = new Map(); // FreePanel map，key是panel的长宽，value是FreePanel数组
+	var free_panel_arr = fun_simulate_panel(100);
+	var free_panel_matrix = fun_convert_matrix(free_panel_arr); // FreePanel 矩阵
+	var cardStyle = new Array(100);
+
+	console.log("=========自由panel模拟数据==========");
+	console.log(free_panel_arr);
+	console.log("=========自由panel的缓冲map==========");
+	console.log(panel_map);
+	console.log("=========自由panel的矩阵==========");
+	console.log(free_panel_matrix);
+	console.log("=========自由panel的矩阵格式化输出==========");
+	for(var i=0; i<free_panel_matrix.length; i++){
+		var str = "";
+		for(var j=0; j<free_panel_matrix[i].length; j++){
+			str = str + (i +2) + "," + (j + 2) + "(" + free_panel_matrix[i][j].length + ") ";
 		}
-		cacheImage(imageUrl,i);
+		console.log(str);
 	}
-	
+	var html = fun_sinulate_panel_html2();
 	$("#app").html(html);
-	
-	
     new Vue({
       el: '#app',
       data: function() {
@@ -76,8 +65,8 @@
 		}
 		var cardH = Math.round(cardW*3/4);
 		cardStyle.width = cardW + 'px';
-		cardStyle.height = (cardH + 70)+ 'px';
-		resizeAllImage(cardW, cardH);
+		cardStyle.height = cardH + 'px';
+		//resizeAllImage(cardW, cardH);
       })	
     }); 
     
@@ -93,7 +82,7 @@
  					height : realHeight	
  				}
  				console.log("缓存第 " + index + "张图片，原始大小 " + realWidth  + " * " + realHeight);
- 				resizeAllImage(fCardW,fCardH,index);
+ 				//resizeAllImage(fCardW,fCardH,index);
 			}
 		};
     }
@@ -121,24 +110,22 @@
     		for(var i=0; i<imageSizeCache.length; i++){
     			var resizeW = width;
     			var resizeH = height;
-    			if(imageSizeCache[i].width && imageSizeCache[i].height){
-    				var imageW = imageSizeCache[i].width;
-        			var imageH = imageSizeCache[i].height;
-        			if(height/width>=1){
-        			}else{
-        				if(imageH/imageW >= height/width){
-        			 		resizeH = height - 10;
-        			 		resizeW = Math.round(imageW * resizeH/imageH);
-        			 		console.log("第 " + i + "张图片，原始大小 " + imageW  + " * " + imageH + "，调整后 " +resizeW + " * " + resizeH);
-        				}else{
-        					resizeW = width - 10;
-        					resizeH = Math.round(resizeW/imageW * imageH);
-        					console.log("第 " + i + "张图片，原始大小 " + imageW  + " * " + imageH + "，调整后 " +resizeW + " * " + resizeH);
-        				}
-        			}
-        			imageStyle[i].width = resizeW + "px";
-        			imageStyle[i].height = resizeH + "px";
+    			var imageW = imageSizeCache[i].width;
+    			var imageH = imageSizeCache[i].height;
+    			if(height/width>=1){
+    			}else{
+    				if(imageH/imageW >= height/width){
+    			 		resizeH = height - 10;
+    			 		resizeW = Math.round(imageW * resizeH/imageH);
+    			 		console.log("第 " + i + "张图片，原始大小 " + imageW  + " * " + imageH + "，调整后 " +resizeW + " * " + resizeH);
+    				}else{
+    					resizeW = width - 10;
+    					resizeH = Math.round(resizeW/imageW * imageH);
+    					console.log("第 " + i + "张图片，原始大小 " + imageW  + " * " + imageH + "，调整后 " +resizeW + " * " + resizeH);
+    				}
     			}
+    			imageStyle[i].width = resizeW + "px";
+    			imageStyle[i].height = resizeH + "px";
     		}
     	}
     }

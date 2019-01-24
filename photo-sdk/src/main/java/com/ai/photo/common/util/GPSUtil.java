@@ -9,12 +9,12 @@ import java.util.Iterator;
 public class GPSUtil {
 	public static GPSMapInfo getAddOnLine(String log, String lat ){  
 		GPSMapInfo mapInfo = null;
-        //lat Ð¡  log  ´ó  
-        //²ÎÊý½âÊÍ: Î³¶È,¾­¶È type 001 (100´ú±íµÀÂ·£¬010´ú±íPOI£¬001´ú±íÃÅÖ·£¬111¿ÉÒÔÍ¬Ê±ÏÔÊ¾Ç°ÈýÏî)  
-		if(log!=null && log.indexOf("¡ã")>=0){
+        //lat å°  log  å¤§  
+        //å‚æ•°è§£é‡Š: çº¬åº¦,ç»åº¦ type 001 (100ä»£è¡¨é“è·¯ï¼Œ010ä»£è¡¨POIï¼Œ001ä»£è¡¨é—¨å€ï¼Œ111å¯ä»¥åŒæ—¶æ˜¾ç¤ºå‰ä¸‰é¡¹)  
+		if(log!=null && log.indexOf("Â°")>=0){
 			log = String.valueOf(GPSUtil.getCoordinate(log));
 		}
-		if(lat!=null && lat.indexOf("¡ã")>=0){
+		if(lat!=null && lat.indexOf("Â°")>=0){
 			lat = String.valueOf(GPSUtil.getCoordinate(lat));
 		}
         String urlString = "http://gc.ditu.aliyun.com/regeocoding?l="+lat+","+log+"&type=010";  
@@ -45,14 +45,14 @@ public class GPSUtil {
     }  
 	
 	//Decimal Degrees = Degrees + minutes/60 + seconds/3600
-		//	Àý£º57¡ã55'56.6" =57+55/60+56.6/3600=57.9323888888888
-			//114¡ã65'24.6"=114+65/60+24.6/3600=½á¹û×Ô¼ºËã!
+		//	ä¾‹ï¼š57Â°55'56.6" =57+55/60+56.6/3600=57.9323888888888
+			//114Â°65'24.6"=114+65/60+24.6/3600=ç»“æžœè‡ªå·±ç®—!
 	//Degrees,minutes,seconds)
 	public static double getCoordinate(String str){
 		double coor = 0;
 		if(str != null){
-			String degrees = str.substring(0, str.lastIndexOf("¡ã"));
-			String minutes = str.substring(str.lastIndexOf("¡ã")+1,str.lastIndexOf("'"));
+			String degrees = str.substring(0, str.lastIndexOf("Â°"));
+			String minutes = str.substring(str.lastIndexOf("Â°")+1,str.lastIndexOf("'"));
 			String seconds = str.substring(str.lastIndexOf("'")+1,str.lastIndexOf("\""));
 			coor = Double.parseDouble(degrees) + Double.parseDouble(minutes)/60 + Double.parseDouble(seconds) /3600;
 		}

@@ -80,10 +80,10 @@ public class FileNameNode {
 
 	public String toString() {
 		String result = "";
-		result = "ÎÄ¼şÃû£º" + name + " | ÀàĞÍ£º" + type
-				+ " | ĞŞ¸ÄÈÕÆÚ£º" + DateUtil.DATE_FORMAT.format(modifyDate)
-				+ " | ÎÄ¼ş´óĞ¡ : " + this.getMB() + " MB"
-				+ "\r\nÂ·¾¶£º" + path + "<br/>";
+		result = "æ–‡ä»¶åï¼š" + name + " | ç±»å‹ï¼š" + type
+				+ " | ä¿®æ”¹æ—¥æœŸï¼š" + DateUtil.DATE_FORMAT.format(modifyDate)
+				+ " | æ–‡ä»¶å¤§å° : " + this.getMB() + " MB"
+				+ "\r\nè·¯å¾„ï¼š" + path + "<br/>";
 		return result;
 	}
 

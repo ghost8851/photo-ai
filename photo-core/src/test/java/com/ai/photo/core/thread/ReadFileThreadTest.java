@@ -4,7 +4,7 @@ import com.ai.photo.core.thread.ReadFileThread;
 
 public class ReadFileThreadTest {
 	public static void main(String[] args){
-		String path = "E:\\ÏàÆ¬\\ÊÖ»úÕÕÆ¬±¸·İ2017-03-31\\ÁõÅôÅô\\½á»éÕÕ\\»éÉ´ÕÕ";
+		String path = "E:\\ç›¸ç‰‡\\æ‰‹æœºç…§ç‰‡å¤‡ä»½2017-03-31\\åˆ˜é¹é¹\\ç»“å©šç…§\\å©šçº±ç…§";
 		ReadFileThread readThread = ReadFileThread.getInstance(path);
 		readThread.run();
 	}

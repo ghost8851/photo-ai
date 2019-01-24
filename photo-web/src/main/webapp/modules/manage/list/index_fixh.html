@@ -1,0 +1,102 @@
+<html>
+<head>
+<meta charset="UTF-8">
+<!-- 引入样式 -->
+<link rel="stylesheet"
+	href="/photo-web/static/render/element/element.css">
+</head>
+<body>
+	<div id="app" style="width:99%;margin: 0 auto;">
+	</div>
+</body>
+<!-- 先引入 Vue -->
+<script src="/photo-web/static/render/vue/vue.js"></script>
+<!-- 引入组件库 -->
+<script src="/photo-web/static/render/element/element.js"></script>
+<script src="/photo-web/static/render/jquery/jquery-3.3.1.min.js"></script>
+<script src="/photo-web/modules/manage/list/js/index_fixh.js"></script>
+<script>
+	var array = new Array(65);
+	for(var i=0; i<65; i++){
+		if(i<9){
+			array[i] = "/photo-web/static/temp/IMG_100" + (i+1) + ".JPG";
+		}else{
+			array[i] = "/photo-web/static/temp/IMG_10" + (i + 1) + ".JPG";
+		}
+	}
+	var imageSizeCache = new Array(65);
+	var imageStyle = new Array(65)
+	var cardStyle = new Array(65);
+	for(var i=0; i<65; i++){
+		var a_index = Math.round(Math.random()* (CONST_PARAM.PX_FACTOR_ARR_W.length - 1));
+		cardStyle[i] = {
+			width :  CONST_PARAM.PX_FACTOR_ARR_W[a_index] + 'px',
+			height : '300px',
+			padding : '0px',
+			float : 'left',
+			margin : '5px',
+			display : ''
+		};
+	}
+	
+	var html = "";
+	for(var i=0; i<65 ; i++){
+		var imageUrl = array[i];
+		var htmlLine = "<el-card shadow=\"hover\" v-bind:style=\"cardStyle[" + i + "]\">"
+			+"<img v-bind:style=\"imageStyle[" + i + "]\" src=\"" + imageUrl + "\" title=\"第【" + i + " 】张图片\" />"
+			+ "<div style=\"padding-top:4px;\"><i class=\"el-icon-time\">2014-09-21 12:45:24</i></div>"
+			+ "<div  style=\"padding-top:4px;\"><i class=\"el-icon-location\">中国 北京</i></div> "
+			+ "<div  style=\"padding-top:4px;\"><el-rate v-model=\"4.5\"></el-rate></div>"
+			+ "</el-card>";
+		html = html + htmlLine;
+		imageStyle[i] = {
+			width : '95%'
+		}
+		cacheImage(imageUrl, i +1);
+	}
+	
+	$("#app").html(html);
+	
+	
+    new Vue({
+      el: '#app',
+      data: function() {
+        return {cardStyle:cardStyle ,imageStyle:imageStyle}
+      }
+    }); 
+    
+    function cacheImage(imageUrl, index){
+    	if(index){
+    		var img = new Image();
+        	img.src = imageUrl;
+    		img.onload = function(){
+    			if(img.width){
+    				var realWidth = img.width;
+     				var realHeight = img.height;
+     				imageSizeCache[index-1] = {
+     					width : realWidth,
+     					height : realHeight	
+     				}
+     				var astyle = fun_get_image_style(realWidth, realHeight);
+     				//var astyle = fun_get_image_style2(realWidth, realHeight, cardStyle[index-1].width, cardStyle[index-1].height);
+     				cardStyle[index-1].width = astyle.width;
+     				cardStyle[index-1].height = astyle.height;
+     				imageStyle[index-1].width = astyle.img_w;
+     				iamgeStyle[index-1].height = astyle.img_h;
+    			}
+    		};
+    	}else{
+    		cardStyle[index-1].display = "none";
+    	}
+    }
+    	
+    </script>
+    
+    <style>
+    	.el-card__body {
+   			padding: 5px;
+   			margin: 0 auto;
+   			width:100%;
+		}
+    </style>
+</html>

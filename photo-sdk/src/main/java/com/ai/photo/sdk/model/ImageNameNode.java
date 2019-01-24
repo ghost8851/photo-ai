@@ -13,7 +13,7 @@ public class ImageNameNode extends FileNameNode{
 	public String gpsLatitude;	//GPS纬度
 	public String gpsLongitude;		//GPS经度
 	public Date gpsTimeStamp;		//GPS时间戳
-	public Date gpdDateStamp;		//GPS日期戳
+	public Date gpsDateStamp;		//GPS日期戳
 	public int getImageWidth() {
 		return imageWidth;
 	}
@@ -74,10 +74,10 @@ public class ImageNameNode extends FileNameNode{
 	public void setGpsTimeStamp(Date gpsTimeStamp) {
 		this.gpsTimeStamp = gpsTimeStamp;
 	}
-	public Date getGpdDateStamp() {
-		return gpdDateStamp;
+	public Date getGpsDateStamp() {
+		return gpsDateStamp;
 	}
-	public void setGpdDateStamp(Date gpdDateStamp) {
-		this.gpdDateStamp = gpdDateStamp;
+	public void setGpsDateStamp(Date gpsDateStamp) {
+		this.gpsDateStamp = gpsDateStamp;
 	}
 }

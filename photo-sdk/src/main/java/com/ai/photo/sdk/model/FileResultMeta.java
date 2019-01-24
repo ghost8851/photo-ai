@@ -1,8 +1,8 @@
 package com.ai.photo.sdk.model;
 
 /**
- * 查询结果
- * 提供关键字排序和结果展示
+ * 鏌ヨ缁撴灉
+ * 鎻愪緵鍏抽敭瀛楁帓搴忓拰缁撴灉灞曠ず
  * @author Administrator
  *
  */

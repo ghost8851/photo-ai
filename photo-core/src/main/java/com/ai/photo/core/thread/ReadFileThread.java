@@ -40,8 +40,8 @@ public class ReadFileThread implements Runnable {
 		this.path = path;
 	}
 	public synchronized void run() {
-		Logger.console("ÈÕÆÚ: "+DateUtil.getCurTime()+" ",false);
-		Logger.console("¶ÁÈ¡ÎÄ¼şÂ·¾¶: "+path);
+		Logger.console("æ—¥æœŸ: "+DateUtil.getCurTime()+" ",false);
+		Logger.console("è¯»å–æ–‡ä»¶è·¯å¾„: "+path);
 		long start = System.currentTimeMillis();
 		File root = new File(path);
 		String[] extArr = null;
@@ -50,8 +50,8 @@ public class ReadFileThread implements Runnable {
 		System.out.println(nameNodeList.toString());
 		long end = System.currentTimeMillis();
 		timeCost = end - start;
-		Logger.console("±¾´Î¶ÁÈ¡ºÄÊ±: " + timeCost/1000 +" Ãë!");
-		Logger.console("ÈÕÆÚ: "+DateUtil.getCurTime()+" ¶ÁÈ¡ÎÄ¼ş½áÊø!");
+		Logger.console("æœ¬æ¬¡è¯»å–è€—æ—¶: " + timeCost/1000 +" ç§’!");
+		Logger.console("æ—¥æœŸ: "+DateUtil.getCurTime()+" è¯»å–æ–‡ä»¶ç»“æŸ!");
 	}
 	
 	public List<FileNameNode> processResult(List<File> fileList){
